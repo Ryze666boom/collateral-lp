@@ -569,6 +569,9 @@
             }, 2000);
         }
 
+        // 客服二维码图片链接
+        const qrImageUrl = 'https://qeco.s3.cn-east-1.qiniucs.com/20260302-144559.jpeg';
+
         // 生成海报
         function generatePoster() {
             const canvas = document.getElementById('poster-canvas');
@@ -625,25 +628,43 @@
                 ctx.fillText(item.text, 100, y);
             });
 
-            // 绘制底部二维码区域
+            // 绘制底部卡片背景
             ctx.fillStyle = '#fff';
             ctx.shadowColor = 'rgba(0,0,0,0.1)';
             ctx.shadowBlur = 10;
-            ctx.fillRect(120, 280, 160, 100);
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 4;
+            ctx.fillRect(100, 290, 200, 100);
             ctx.shadowBlur = 0;
 
-            // 绘制二维码占位符
-            ctx.fillStyle = '#ddd';
-            ctx.fillRect(150, 300, 100, 60);
-            ctx.font = '12px -apple-system, BlinkMacSystemFont, sans-serif';
-            ctx.fillStyle = '#999';
-            ctx.textAlign = 'center';
-            ctx.fillText('长按识别二维码', 200, 345);
+            // 绘制客服二维码图片
+            const img = new Image();
+            img.crossOrigin = 'Anonymous';
+            img.onload = function() {
+                // 在卡片中绘制图片
+                const imgWidth = 80;
+                const imgHeight = 80;
+                const imgX = 160;
+                const imgY = 300;
+                ctx.drawImage(img, imgX, imgY, imgWidth, imgHeight);
 
-            // 绘制底部提示
-            ctx.font = '14px -apple-system, BlinkMacSystemFont, sans-serif';
-            ctx.fillStyle = '#D48806';
-            ctx.fillText('扫码填写手机号，立即参与！', 200, 385);
+                // 绘制底部提示
+                ctx.font = '12px -apple-system, BlinkMacSystemFont, sans-serif';
+                ctx.fillStyle = '#D48806';
+                ctx.textAlign = 'center';
+                ctx.fillText('长按识别二维码，立即参与！', 200, 395);
+            };
+            img.onerror = function() {
+                // 图片加载失败时显示占位
+                ctx.fillStyle = '#ddd';
+                ctx.fillRect(160, 300, 80, 80);
+                ctx.font = '12px -apple-system, BlinkMacSystemFont, sans-serif';
+                ctx.fillStyle = '#999';
+                ctx.textAlign = 'center';
+                ctx.fillText('扫码参与', 200, 345);
+                ctx.fillText('长按识别二维码，立即参与！', 200, 395);
+            };
+            img.src = qrImageUrl;
         }
     </script>
 </body>
