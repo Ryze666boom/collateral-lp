@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>还款抵扣 · 专属福利</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #FFF8E7;
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .page {
+            display: none;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        /* 老用户入口页 */
+        .page-old {
+            background: linear-gradient(180deg, #FFF8E7 0%, #FFE4B5 100%);
+        }
+        
+        .header {
+            text-align: center;
+            padding: 30px 0 20px;
+        }
+        
+        .header-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            color: #D48806;
+            margin-bottom: 8px;
+        }
+        
+        .header p {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 24px;
+            margin: 20px 0;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        }
+        
+        .input-group {
+            margin-bottom: 16px;
+        }
+        
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #FFE4B5;
+            border-radius: 12px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        
+        .input-group input:focus {
+            border-color: #D48806;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #D48806 0%, #FF8C00 100%);
+            color: #fff;
+        }
+        
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+        
+        .rules {
+            background: #FFF8E7;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 20px 0;
+        }
+        
+        .rules h3 {
+            font-size: 14px;
+            color: #D48806;
+            margin-bottom: 12px;
+        }
+        
+        .rules ul {
+            list-style: none;
+        }
+        
+        .rules li {
+            font-size: 13px;
+            color: #666;
+            padding: 6px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .rules li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #D48806;
+        }
+        
+        /* 成功页面 */
+        .success-page {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        
+        .success-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+        
+        .success-title {
+            font-size: 20px;
+            color: #D48806;
+            margin-bottom: 8px;
+        }
+        
+        .success-desc {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 24px;
+        }
+        
+        .link-box {
+            background: #F5F5F5;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 20px 0;
+            word-break: break-all;
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        
+        .btn-secondary {
+            flex: 1;
+            padding: 14px;
+            background: #F5F5F5;
+            color: #333;
+            border: 2px solid #E0E0E0;
+        }
+        
+        /* 新用户受邀页 */
+        .page-new {
+            background: linear-gradient(180deg, #E8F5E9 0%, #C8E6C9 100%);
+        }
+        
+        .coupon {
+            background: linear-gradient(135deg, #52C41A 0%, #73D13D 100%);
+            border-radius: 16px;
+            padding: 30px 20px;
+            text-align: center;
+            color: #fff;
+            margin: 20px 0;
+        }
+        
+        .coupon-label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+        
+        .coupon-amount {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .coupon-amount span {
+            font-size: 20px;
+        }
+        
+        .coupon-desc {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .services {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin: 20px 0;
+        }
+        
+        .service-item {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        
+        .service-item:active {
+            transform: scale(0.95);
+        }
+        
+        .service-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+        
+        .service-name {
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .contact-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            margin: 20px 0;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        }
+        
+        .contact-card h3 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 12px;
+        }
+        
+        .contact-card p {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 16px;
+        }
+        
+        .btn-contact {
+            background: #52C41A;
+            color: #fff;
+            display: inline-block;
+            padding: 12px 32px;
+            border-radius: 24px;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        /* 弹窗 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .modal.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: #fff;
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .modal-qr {
+            width: 200px;
+            height: 200px;
+            background: #f5f5f5;
+            margin: 16px auto;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 14px;
+        }
+        
+        .modal-close {
+            margin-top: 16px;
+            padding: 12px;
+            background: #f5f5f5;
+            border-radius: 12px;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        /* 提示 */
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.75);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 2000;
+            display: none;
+        }
+        
+        .toast.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- 老用户入口页 -->
+    <div class="page page-old active" id="page-old">
+        <div class="header">
+            <div class="header-icon">💰</div>
+            <h1>还款抵扣 · 专属福利</h1>
+            <p>在我这边做过抵押的老用户专属</p>
+        </div>
+        
+        <div class="card">
+            <div class="input-group">
+                <label>📱 请输入您的手机号</label>
+                <input type="tel" id="phone" placeholder="填写手机号，领取专属链接" maxlength="11">
+            </div>
+            <button class="btn btn-primary" id="btn-submit">📩 立即领取福利</button>
+        </div>
+        
+        <div class="rules">
+            <h3>💡 规则说明</h3>
+            <ul>
+                <li>每邀请1位朋友成交 <b>➔ 抵扣50元还款</b></li>
+                <li>邀请越多，抵扣越多（<b>无上限</b>）</li>
+                <li>朋友也能得 <b>50元无门槛券</b></li>
+            </ul>
+        </div>
+    </div>
+    
+    <!-- 成功页 -->
+    <div class="page" id="page-success">
+        <div class="success-page">
+            <div class="success-icon">✅</div>
+            <h2 class="success-title">专属链接已生成！</h2>
+            <p class="success-desc">分享给朋友，他们成交您就抵扣50元</p>
+            
+            <div class="card">
+                <p style="font-size:14px;color:#666;margin-bottom:8px;">📎 您的专属邀请链接</p>
+                <div class="link-box" id="share-link">https://xxx.com/?from=手机号</div>
+                <button class="btn btn-primary" id="btn-copy">🔗 复制链接</button>
+            </div>
+            
+            <div class="btn-group">
+                <button class="btn btn-secondary" id="btn-poster">🖼️ 生成海报</button>
+                <button class="btn btn-secondary" id="btn-share">📤 立即分享</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 新用户受邀页 -->
+    <div class="page page-new" id="page-new">
+        <div class="header">
+            <div class="header-icon">🎁</div>
+            <h1>好消息！专属福利已到账</h1>
+            <p id="inviter-info">您的好友邀请您来</p>
+        </div>
+        
+        <div class="coupon">
+            <div class="coupon-label">🎫 您的专属优惠券</div>
+            <div class="coupon-amount"><span>¥</span>50</div>
+            <div class="coupon-desc">买号 · 抵押 · 卖号 全部可用</div>
+        </div>
+        
+        <p style="text-align:center;font-size:16px;font-weight:600;margin:20px 0 0;">💰 选择您需要的服务</p>
+        
+        <div class="services">
+            <div class="service-item" onclick="contactService('买号')">
+                <div class="service-icon">🆔</div>
+                <div class="service-name">买号</div>
+            </div>
+            <div class="service-item" onclick="contactService('抵押')">
+                <div class="service-icon">📋</div>
+                <div class="service-name">抵押</div>
+            </div>
+            <div class="service-item" onclick="contactService('卖号')">
+                <div class="service-icon">💼</div>
+                <div class="service-name">卖号</div>
+            </div>
+        </div>
+        
+        <div class="contact-card">
+            <h3>📞 联系客服领取福利</h3>
+            <p>点击下方按钮，联系客服完成成交<br>50元券自动抵扣</p>
+            <a href="#" class="btn-contact" id="contact-btn">📱 立即联系</a>
+        </div>
+        
+        <div class="rules">
+            <h3>💡 券使用说明</h3>
+            <ul>
+                <li>优惠券 <b>无门槛</b>，可用于任意服务</li>
+                <li>成交时自动抵扣</li>
+                <li>有效期：7天</li>
+            </ul>
+        </div>
+    </div>
+    
+    <!-- 海报弹窗 -->
+    <div class="modal" id="modal-poster">
+        <div class="modal-content">
+            <h3>🖼️ 分享海报</h3>
+            <div class="modal-qr" id="qr-placeholder">
+                海报生成中...
+            </div>
+            <p style="font-size:14px;color:#666;">长按保存图片，分享朋友圈</p>
+            <button class="modal-close" onclick="closeModal()">关闭</button>
+        </div>
+    </div>
+    
+    <!-- 提示 -->
+    <div class="toast" id="toast"></div>
+    
+    <script>
+        // 获取URL参数
+        function getQueryParam(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+        
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            const fromUser = getQueryParam('from');
+            
+            if (fromUser) {
+                // 有邀请参数，显示新用户页面
+                document.getElementById('page-old').classList.remove('active');
+                document.getElementById('page-success').classList.remove('active');
+                document.getElementById('page-new').classList.add('active');
+                
+                if (fromUser.length === 11) {
+                    document.getElementById('inviter-info').textContent = 
+                        '您的好友 ' + fromUser.slice(0,3) + '****' + fromUser.slice(-4) + ' 邀请您来';
+                }
+            }
+            
+            // 生成专属链接
+            document.getElementById('btn-submit').addEventListener('click', function() {
+                const phone = document.getElementById('phone').value.trim();
+                
+                if (!/^1\d{10}$/.test(phone)) {
+                    showToast('请输入正确的手机号');
+                    return;
+                }
+                
+                // 生成链接
+                const baseUrl = window.location.origin + window.location.pathname;
+                const shareUrl = baseUrl + '?from=' + phone;
+                
+                document.getElementById('share-link').textContent = shareUrl;
+                
+                // 切换到成功页
+                document.getElementById('page-old').classList.remove('active');
+                document.getElementById('page-success').classList.add('active');
+                
+                // 这里可以添加数据上报逻辑
+                console.log('用户手机号:', phone);
+                console.log('专属链接:', shareUrl);
+            });
+            
+            // 复制链接
+            document.getElementById('btn-copy').addEventListener('click', function() {
+                const link = document.getElementById('share-link').textContent;
+                navigator.clipboard.writeText(link).then(function() {
+                    showToast('链接已复制');
+                }).catch(function() {
+                    showToast('复制失败，请手动复制');
+                });
+            });
+            
+            // 生成海报
+            document.getElementById('btn-poster').addEventListener('click', function() {
+                document.getElementById('modal-poster').classList.add('show');
+            });
+            
+            // 分享按钮
+            document.getElementById('btn-share').addEventListener('click', function() {
+                const link = document.getElementById('share-link').textContent;
+                
+                if (navigator.share) {
+                    navigator.share({
+                        title: '还款抵扣 · 专属福利',
+                        text: '在我这边做过抵押的老用户，每邀请1位朋友成交，抵扣50元还款！无上限！',
+                        url: link
+                    });
+                } else {
+                    showToast('请点击"复制链接"分享给朋友');
+                }
+            });
+        });
+        
+        // 关闭弹窗
+        function closeModal() {
+            document.getElementById('modal-poster').classList.remove('show');
+        }
+        
+        // 联系客服
+        function contactService(service) {
+            document.getElementById('contact-btn').href = 
+                'https://work.weixin.qq.com/kfid/YOUR_KFID?text=' + 
+                encodeURIComponent('我想' + service + '，我有50元券');
+            document.getElementById('contact-btn').click();
+        }
+        
+        // 显示提示
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(function() {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
