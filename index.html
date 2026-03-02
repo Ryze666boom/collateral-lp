@@ -588,71 +588,76 @@
         }
 
         // 客服二维码图片链接
-        const qrImageUrl = 'https://qeco.s3.cn-east-1.qiniucs.com/20260302-144559.jpeg';
+        const qrImageUrl = 'https://i.mituw.com/imgs/2026/03/02/15e513c26aa024b0.jpeg';
 
-        // 生成海报
+        // 生成海报（受邀人版本）
         function generatePoster() {
             const canvas = document.getElementById('poster-canvas');
             const ctx = canvas.getContext('2d');
 
             // 设置画布大小
             canvas.width = 400;
-            canvas.height = 400;
+            canvas.height = 450;
 
-            // 绘制背景
-            const gradient = ctx.createLinearGradient(0, 0, 400, 400);
-            gradient.addColorStop(0, '#FFF8E7');
-            gradient.addColorStop(1, '#FFE4B5');
+            // 绘制背景（绿色主题 - 受邀人）
+            const gradient = ctx.createLinearGradient(0, 0, 400, 450);
+            gradient.addColorStop(0, '#E8F5E9');
+            gradient.addColorStop(1, '#C8E6C9');
             ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, 400, 400);
+            ctx.fillRect(0, 0, 400, 450);
 
             // 绘制图标
             ctx.font = '60px Arial';
             ctx.textAlign = 'center';
-            ctx.fillText('💰', 200, 80);
+            ctx.fillText('🎁', 200, 80);
 
             // 绘制标题
-            ctx.font = 'bold 24px -apple-system, BlinkMacSystemFont, sans-serif';
-            ctx.fillStyle = '#D48806';
-            ctx.fillText('还款抵扣 · 专属福利', 200, 130);
+            ctx.font = 'bold 22px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.fillStyle = '#52C41A';
+            ctx.fillText('游戏账号专属福利已到账', 200, 125);
 
             // 绘制副标题
             ctx.font = '14px -apple-system, BlinkMacSystemFont, sans-serif';
             ctx.fillStyle = '#666';
-            ctx.fillText('做过抵押的老用户专属福利', 200, 160);
+            ctx.fillText('您的好友邀请您来', 200, 155);
+
+            // 绘制优惠券卡片
+            ctx.fillStyle = '#52C41A';
+            ctx.shadowColor = 'rgba(0,0,0,0.15)';
+            ctx.shadowBlur = 10;
+            ctx.shadowOffsetY = 4;
+            roundRect(ctx, 50, 175, 300, 90, 12);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+
+            // 优惠券文字
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 16px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.fillText('🎫 您的专属优惠券', 200, 210);
+            ctx.font = 'bold 36px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.fillText('¥50', 200, 255);
+            ctx.font = '14px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.fillText('买号 · 抵押 · 卖号 全部可用', 200, 280);
+
+            // 游戏名称
+            ctx.fillStyle = '#333';
+            ctx.font = '12px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.fillText('（游戏名称：王者荣耀、和平精英、三角洲行动等）', 200, 310);
 
             // 绘制分隔线
-            ctx.strokeStyle = '#FFE4B5';
+            ctx.strokeStyle = '#E0E0E0';
             ctx.beginPath();
-            ctx.moveTo(50, 190);
-            ctx.lineTo(350, 190);
+            ctx.moveTo(50, 330);
+            ctx.lineTo(350, 330);
             ctx.stroke();
-
-            // 绘制收益点
-            const benefits = [
-                { icon: '👥', text: '每邀请1位朋友成交' },
-                { icon: '✅', text: '抵扣50元还款' },
-                { icon: '🔥', text: '无上限！拉得多抵得多' },
-                { icon: '🎁', text: '朋友得50元无门槛券' }
-            ];
-
-            benefits.forEach(function(item, index) {
-                const y = 230 + index * 35;
-                ctx.font = '20px Arial';
-                ctx.textAlign = 'left';
-                ctx.fillText(item.icon, 60, y);
-                ctx.font = '16px -apple-system, BlinkMacSystemFont, sans-serif';
-                ctx.fillStyle = '#333';
-                ctx.fillText(item.text, 100, y);
-            });
 
             // 绘制底部卡片背景
             ctx.fillStyle = '#fff';
             ctx.shadowColor = 'rgba(0,0,0,0.1)';
             ctx.shadowBlur = 10;
-            ctx.shadowOffsetX = 0;
             ctx.shadowOffsetY = 4;
-            ctx.fillRect(100, 290, 200, 100);
+            roundRect(ctx, 100, 350, 200, 90, 12);
+            ctx.fill();
             ctx.shadowBlur = 0;
 
             // 绘制客服二维码图片
@@ -660,29 +665,46 @@
             img.crossOrigin = 'Anonymous';
             img.onload = function() {
                 // 在卡片中绘制图片
-                const imgWidth = 80;
-                const imgHeight = 80;
-                const imgX = 160;
-                const imgY = 300;
+                const imgWidth = 70;
+                const imgHeight = 70;
+                const imgX = 165;
+                const imgY = 360;
                 ctx.drawImage(img, imgX, imgY, imgWidth, imgHeight);
 
                 // 绘制底部提示
                 ctx.font = '12px -apple-system, BlinkMacSystemFont, sans-serif';
-                ctx.fillStyle = '#D48806';
+                ctx.fillStyle = '#52C41A';
                 ctx.textAlign = 'center';
-                ctx.fillText('长按识别二维码，立即参与！', 200, 395);
+                ctx.fillText('长按二维码，添加客服领取福利！', 200, 440);
             };
             img.onerror = function() {
                 // 图片加载失败时显示占位
-                ctx.fillStyle = '#ddd';
-                ctx.fillRect(160, 300, 80, 80);
-                ctx.font = '12px -apple-system, BlinkMacSystemFont, sans-serif';
+                ctx.fillStyle = '#f5f5f5';
+                ctx.fillRect(165, 360, 70, 70);
+                ctx.strokeStyle = '#ddd';
+                ctx.strokeRect(165, 360, 70, 70);
+                ctx.font = '10px -apple-system, BlinkMacSystemFont, sans-serif';
                 ctx.fillStyle = '#999';
                 ctx.textAlign = 'center';
-                ctx.fillText('扫码参与', 200, 345);
-                ctx.fillText('长按识别二维码，立即参与！', 200, 395);
+                ctx.fillText('客服二维码', 200, 400);
+                ctx.fillText('长按二维码，添加客服领取福利！', 200, 440);
             };
             img.src = qrImageUrl;
+        }
+
+        // 圆角矩形辅助函数
+        function roundRect(ctx, x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
         }
     </script>
 </body>
